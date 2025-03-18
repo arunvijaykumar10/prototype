@@ -10,6 +10,8 @@ import {
   Paper,
   CircularProgress,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   Google,
@@ -24,7 +26,7 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 
-interface LoginFormInputs {
+interface ILoginFormInputs {
   email: string;
   password: string;
 }
@@ -34,21 +36,22 @@ const LoginPage: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormInputs>();
-  const [loading, setLoading] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  } = useForm<ILoginFormInputs>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const theme = createTheme({
     palette: {
-      mode: darkMode ? "dark" : "light",
+      mode: isDarkMode ? "dark" : "light",
       primary: { main: "#4CAF50" },
     },
     components: {
       MuiPaper: {
         styleOverrides: {
           root: {
-            background: darkMode
+            background: isDarkMode
               ? "rgba(255, 255, 255, 0.1)"
               : "rgba(255, 255, 255, 0.5)",
             backdropFilter: "blur(10px)",
@@ -61,19 +64,52 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    setLoading(true);
+  const handleFormSubmit: SubmitHandler<ILoginFormInputs> = async (data) => {
+    try {
+      setIsLoading(true);
+      setErrorMessage(null);
 
-    setTimeout(() => {
-      if (data.email === "arunkumar@dry.com" && data.password === "asdfghjkl") {
-        console.log("User Logged In:", data);
-        // alert("Login Successful!");
-        navigate("/dashboard"); // Redirect to Dashboard
-      } else {
-        alert("Invalid email or password!"); // Show error message
+      if (!data.email || !data.password) {
+        throw new Error("Please enter both email and password");
       }
-      setLoading(false);
-    }, 1500);
+
+      const response = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (
+            data.email === "arunkumar@gmail.com" &&
+            data.password === "password123"
+          ) {
+            resolve({ success: true });
+          } else {
+            reject(new Error("Invalid credentials"));
+          }
+        }, 1000);
+      });
+
+      localStorage.setItem("isAuthenticated", "true");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "An error occurred during login"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDarkModeToggle = (): void => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  const handleErrorClose = (): void => {
+    setErrorMessage(null);
+  };
+
+  const handleSignUpClick = (): void => {
+    navigate("/signup");
   };
 
   return (
@@ -89,11 +125,11 @@ const LoginPage: React.FC = () => {
         }}
       >
         <IconButton
-          onClick={() => setDarkMode(!darkMode)}
+          onClick={handleDarkModeToggle}
           sx={{ position: "absolute", top: 20, right: 20 }}
           color="inherit"
         >
-          {darkMode ? <Brightness7 /> : <Brightness4 />}
+          {isDarkMode ? <Brightness7 /> : <Brightness4 />}
         </IconButton>
 
         <Paper elevation={3} sx={{ textAlign: "center", p: 4, width: "100%" }}>
@@ -108,7 +144,7 @@ const LoginPage: React.FC = () => {
             Sign in to continue
           </Typography>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(handleFormSubmit)}>
             <Box mt={3} mb={2}>
               <TextField
                 fullWidth
@@ -117,7 +153,7 @@ const LoginPage: React.FC = () => {
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
-                    value: /\S+@\S+\.\S+/,
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                     message: "Invalid email format",
                   },
                 })}
@@ -132,7 +168,13 @@ const LoginPage: React.FC = () => {
                 type="password"
                 label="Password"
                 variant="outlined"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
                 error={!!errors.password}
                 helperText={errors.password?.message}
               />
@@ -143,9 +185,9 @@ const LoginPage: React.FC = () => {
               variant="contained"
               fullWidth
               sx={{ py: 1.5, borderRadius: "10px" }}
-              disabled={loading}
+              disabled={isLoading}
             >
-              {loading ? <CircularProgress size={24} /> : "Login"}
+              {isLoading ? <CircularProgress size={24} /> : "Login"}
             </Button>
           </form>
 
@@ -183,11 +225,22 @@ const LoginPage: React.FC = () => {
                 cursor: "pointer",
                 fontWeight: "bold",
               }}
+              onClick={handleSignUpClick}
             >
               Sign Up
             </span>
           </Typography>
         </Paper>
+
+        <Snackbar
+          open={!!errorMessage}
+          autoHideDuration={6000}
+          onClose={handleErrorClose}
+        >
+          <Alert severity="error" onClose={handleErrorClose}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </Container>
     </ThemeProvider>
   );
