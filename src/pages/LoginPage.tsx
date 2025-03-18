@@ -26,7 +26,7 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 
-interface ILoginFormInputs {
+interface ILoginFormInputs {    
   email: string;
   password: string;
 }
@@ -40,6 +40,7 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const theme = createTheme({
@@ -68,6 +69,7 @@ const LoginPage: React.FC = () => {
     try {
       setIsLoading(true);
       setErrorMessage(null);
+      setSuccessMessage(null);
 
       if (!data.email || !data.password) {
         throw new Error("Please enter both email and password");
@@ -87,7 +89,10 @@ const LoginPage: React.FC = () => {
       });
 
       localStorage.setItem("isAuthenticated", "true");
-      navigate("/dashboard");
+      setSuccessMessage("Login successful!");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     } catch (error) {
       console.error("Login error:", error);
       setErrorMessage(
@@ -106,6 +111,10 @@ const LoginPage: React.FC = () => {
 
   const handleErrorClose = (): void => {
     setErrorMessage(null);
+  };
+
+  const handleSuccessClose = (): void => {
+    setSuccessMessage(null);
   };
 
   const handleSignUpClick = (): void => {
@@ -239,6 +248,16 @@ const LoginPage: React.FC = () => {
         >
           <Alert severity="error" onClose={handleErrorClose}>
             {errorMessage}
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={!!successMessage}
+          autoHideDuration={6000}
+          onClose={handleSuccessClose}
+        >
+          <Alert severity="success" onClose={handleSuccessClose}>
+            {successMessage}
           </Alert>
         </Snackbar>
       </Container>
