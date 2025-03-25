@@ -25,6 +25,7 @@ import {
 } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import axios from "axios";
 
 interface ILoginFormInputs {    
   email: string;
@@ -51,7 +52,7 @@ const LoginPage: React.FC = () => {
     components: {
       MuiPaper: {
         styleOverrides: {
-          root: {
+          root: {                                                                                 
             background: isDarkMode
               ? "rgba(255, 255, 255, 0.1)"
               : "rgba(255, 255, 255, 0.5)",
@@ -71,29 +72,21 @@ const LoginPage: React.FC = () => {
       setErrorMessage(null);
       setSuccessMessage(null);
 
-      if (!data.email || !data.password) {
-        throw new Error("Please enter both email and password");
-      }
-
-      const response = await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (
-            data.email === "arunkumar@gmail.com" &&
-            data.password === "password123"
-          ) {
-            resolve({ success: true });
-          } else {
-            reject(new Error("Invalid credentials"));
-          }
-        }, 1000);
+      const response = await axios.post("/api/login", {
+        email: data.email,
+        password: data.password,
       });
 
-      localStorage.setItem("isAuthenticated", "true");
-      setSuccessMessage("Login successful!");
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
-    } catch (error) {
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token); 
+        setSuccessMessage("Login successful!");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
+      } else {
+        throw new Error(response.data.message || "Login failed");
+      }
+    } catch (error) { 
       console.error("Login error:", error);
       setErrorMessage(
         error instanceof Error
