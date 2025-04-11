@@ -55,7 +55,7 @@ import ConfirmationScreen from "./Confirmation";
 
 const MarketingOSLayout = () => {
   // Main navigation state
-  const [activeStep, setActiveStep] = useState(0);
+  // const [activeStep, setActiveStep] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
 
   // Auto-save status
@@ -68,7 +68,7 @@ const MarketingOSLayout = () => {
   };
 
   const handleTabChange = (
-    _event: any,
+    _event: React.SyntheticEvent,
     newValue: React.SetStateAction<number>
   ) => {
     setActiveTab(newValue);
@@ -163,7 +163,7 @@ const MarketingOSLayout = () => {
       <Container component="main" maxWidth="lg" sx={{ py: 4, flexGrow: 1 }}>
         {/* Progress Steps */}
         <Box mb={4}>
-          <ProgressTracker currentStep={activeStep} />
+          {/* <ProgressTracker currentStep={activeStep} /> */}
         </Box>
 
         {/* Navigation Tabs */}
@@ -316,7 +316,7 @@ const CampaignBriefBuilder = ({
     { id: 5, name: "Service Y" },
   ];
 
-  const handleInputChange = (e: { target: { name: any; value: any } }) => {
+  const handleInputChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,

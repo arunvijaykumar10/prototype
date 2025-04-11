@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Paper,
-  Divider,
   TextField,
   InputAdornment,
   Card,
@@ -24,18 +23,11 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
-  FormLabel,
   Checkbox,
   Stack,
-  IconButton,
   AppBar,
   Toolbar,
-  Container,
-  Badge,
   Alert,
-  InputLabel,
-  Select,
-  MenuItem,
   ToggleButtonGroup,
   ToggleButton,
 } from "@mui/material";
@@ -47,7 +39,6 @@ import {
   Beaker,
   ChevronRight,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import AddIntegrationModal from "./NewIntegration";
 
 // Mock data for integrations
@@ -264,7 +255,7 @@ const IntegrationDirectory = ({
   selectedIntegration: Integration | null;
   onSelectIntegration: (integration: Integration) => void;
 }) => {
-  const getStatusIcon = (status: any) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case "connected":
         return (
@@ -301,7 +292,7 @@ const IntegrationDirectory = ({
     }
   };
 
-  const getTypeIcon = (type: any) => {
+  const getTypeIcon = (type: string) => {
     switch (type) {
       case "CMP":
         return "📄";
@@ -449,7 +440,7 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
   const [activeTab, setActiveTab] = useState("overview");
 
   const handleChangeTab = (
-    event: any,
+    _event: React.SyntheticEvent,
     newValue: React.SetStateAction<string>
   ) => {
     setActiveTab(newValue);
@@ -721,10 +712,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                             | number
                             | bigint
                             | boolean
-                            | React.ReactElement<
-                                unknown,
-                                string | React.JSXElementConstructor<any>
-                              >
                             | Iterable<React.ReactNode>
                             | React.ReactPortal
                             | Promise<
@@ -733,10 +720,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                                 | bigint
                                 | boolean
                                 | React.ReactPortal
-                                | React.ReactElement<
-                                    unknown,
-                                    string | React.JSXElementConstructor<any>
-                                  >
                                 | Iterable<React.ReactNode>
                                 | null
                                 | undefined
@@ -748,10 +731,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                             | number
                             | bigint
                             | boolean
-                            | React.ReactElement<
-                                unknown,
-                                string | React.JSXElementConstructor<any>
-                              >
                             | Iterable<React.ReactNode>
                             | React.ReactPortal
                             | Promise<
@@ -760,10 +739,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                                 | bigint
                                 | boolean
                                 | React.ReactPortal
-                                | React.ReactElement<
-                                    unknown,
-                                    string | React.JSXElementConstructor<any>
-                                  >
                                 | Iterable<React.ReactNode>
                                 | null
                                 | undefined
@@ -775,10 +750,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                             | number
                             | bigint
                             | boolean
-                            | React.ReactElement<
-                                unknown,
-                                string | React.JSXElementConstructor<any>
-                              >
                             | Iterable<React.ReactNode>
                             | React.ReactPortal
                             | Promise<
@@ -787,10 +758,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                                 | bigint
                                 | boolean
                                 | React.ReactPortal
-                                | React.ReactElement<
-                                    unknown,
-                                    string | React.JSXElementConstructor<any>
-                                  >
                                 | Iterable<React.ReactNode>
                                 | null
                                 | undefined
@@ -802,10 +769,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                             | number
                             | bigint
                             | boolean
-                            | React.ReactElement<
-                                unknown,
-                                string | React.JSXElementConstructor<any>
-                              >
                             | Iterable<React.ReactNode>
                             | React.ReactPortal
                             | Promise<
@@ -814,10 +777,6 @@ const IntegrationDetails = ({ integration }: { integration: Integration }) => {
                                 | bigint
                                 | boolean
                                 | React.ReactPortal
-                                | React.ReactElement<
-                                    unknown,
-                                    string | React.JSXElementConstructor<any>
-                                  >
                                 | Iterable<React.ReactNode>
                                 | null
                                 | undefined
@@ -1005,11 +964,10 @@ const MainLayout = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
-  const navigate = useNavigate();
 
   // Handle category filter change
   const handleCategoryChange = (
-    event: any,
+    _event: React.MouseEvent<HTMLElement>,
     newValue: React.SetStateAction<string> | null
   ) => {
     if (newValue !== null) {

@@ -60,7 +60,7 @@ const ToolLogo = styled(Avatar)(({ theme }) => ({
   fontWeight: "medium",
 }));
 
-const DataTypeLabel = styled(FormControlLabel)(({ theme }) => ({
+const DataTypeLabel = styled(FormControlLabel)(() => ({
   margin: 0,
   width: "100%",
   "& .MuiFormControlLabel-label": {
