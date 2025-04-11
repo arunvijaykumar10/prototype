@@ -315,7 +315,7 @@ const AssetAttachmentUploadPanel: React.FC<{
   };
 
   const handleViewModeChange = (
-    event: any,
+    _event: React.MouseEvent<HTMLElement>,
     newValue: React.SetStateAction<string> | null
   ) => {
     if (newValue !== null) {

@@ -163,7 +163,7 @@ const MarketingOSLayout = () => {
       <Container component="main" maxWidth="lg" sx={{ py: 4, flexGrow: 1 }}>
         {/* Progress Steps */}
         <Box mb={4}>
-          {/* <ProgressTracker currentStep={activeStep} /> */}
+          <ProgressTracker currentStep={0} />
         </Box>
 
         {/* Navigation Tabs */}
