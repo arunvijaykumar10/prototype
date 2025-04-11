@@ -9,6 +9,7 @@ import {
   Drawer,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Toolbar,
@@ -58,6 +59,7 @@ function App() {
 
 function Sidebar() {
   const navigate = useNavigate();
+  const currentPath = window.location.pathname;
 
   const menuItems = [
     { text: "Campaign Setup", icon: <DashboardIcon />, path: "/marketing-os" },
@@ -67,9 +69,22 @@ function Sidebar() {
   return (
     <List>
       {menuItems.map((item) => (
-        <ListItem key={item.text} onClick={() => navigate(item.path)}>
-          <ListItemIcon>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text} />
+        <ListItem key={item.text} disablePadding component="div">
+          <ListItemButton
+            onClick={() => navigate(item.path)}
+            selected={currentPath === item.path}
+            sx={{
+              "&.Mui-selected": {
+                backgroundColor: "action.selected",
+                "&:hover": {
+                  backgroundColor: "action.hover",
+                },
+              },
+            }}
+          >
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItemButton>
         </ListItem>
       ))}
     </List>
